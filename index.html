@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11:11 - I'm Sorry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 30%, #fbc2eb 70%, #a6c1ee 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating hearts */
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            opacity: 0;
+            animation: float-heart 10s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float-heart {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(45deg, #fbc2eb, #a6c1ee);
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Card Container */
+        .card-container {
+            perspective: 1500px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .flip-card {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Card Sides */
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-front {
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid rgba(252, 182, 159, 0.4);
+        }
+
+        .card-back {
+            background: rgba(255, 255, 255, 0.95);
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            border: 3px solid rgba(251, 194, 235, 0.4);
+        }
+
+        /* Front Card Content */
+        .time-display {
+            font-size: 5em;
+            color: #ff6b9d;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+            animation: pulse-time 2s infinite;
+        }
+
+        @keyframes pulse-time {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .front-message {
+            color: #666;
+            font-size: 1.3em;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .tap-hint {
+            color: #ff6b9d;
+            font-size: 1em;
+            padding: 12px 30px;
+            border: 2px dashed rgba(255, 107, 157, 0.5);
+            border-radius: 30px;
+            animation: blink 2s infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Back Card Content */
+        .card-back::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-back::-webkit-scrollbar-track {
+            background: rgba(255, 182, 159, 0.1);
+            border-radius: 10px;
+        }
+
+        .card-back::-webkit-scrollbar-thumb {
+            background: rgba(255, 107, 157, 0.3);
+            border-radius: 10px;
+        }
+
+        .back-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .back-header h2 {
+            color: #ff6b9d;
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .back-header .time {
+            color: #888;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        .apology-message {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 1.9;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .apology-message p {
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+
+        .closing {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed rgba(255, 107, 157, 0.3);
+        }
+
+        .closing-heart {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .closing p {
+            color: #ff6b9d;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .signature {
+            color: #888;
+            font-size: 1em;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: fixed;
+            bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff6b9d;
+            border: 2px solid rgba(255, 107, 157, 0.4);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(255, 107, 157, 0.2);
+        }
+
+        .close-btn.visible {
+            opacity: 1;
+        }
+
+        .close-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            .flip-card {
+                height: 550px;
+            }
+
+            .time-display {
+                font-size: 4em;
+            }
+
+            .front-message {
+                font-size: 1.1em;
+            }
+
+            .card-front,
+            .card-back {
+                padding: 30px 25px;
+            }
+
+            .back-header h2 {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <div class="flip-card" id="flipCard">
+            <!-- Front Side -->
+            <div class="card-front">
+                <div class="time-display">11:11</div>
+                <div class="front-message">
+                    It's 11:11<br>
+                    and I'm building this for you...
+                </div>
+                <div class="tap-hint">Tap to Open My Heart</div>
+            </div>
+
+            <!-- Back Side -->
+            <div class="card-back">
+                <div class="back-header">
+                    <h2>I'm So Sorry</h2>
+                    <p class="time">Written at 11:11</p>
+                </div>
+
+                <div class="apology-message">
+                    <p>Are you not replying to me because all the things happening is for me na? You are so quiet...</p>
+
+                    <p>I was <span class="highlight">so happy to see you smile and be childish in front of me</span>. That's the you I love seeing.</p>
+
+                    <p><span class="highlight">I'm so sorry for these 3 days.</span> I'm so, so sorry.</p>
+
+                    <p>I just want you to be happy, please. <span class="highlight">I am just extremely sorry</span> for what happened in the afternoon and in the evening.</p>
+
+                    <p>I know I messed up. I know my words or actions hurt you. And that's the last thing I ever want to do.</p>
+
+                    <p>You mean everything to me. Your silence is killing me. Please talk to me. Please give me a chance to make things right.</p>
+                </div>
+
+                <div class="closing">
+                    <div class="closing-heart">❤️</div>
+                    <p>I love you so much</p>
+                    <p style="font-size: 0.9em; color: #888;">I really, truly do</p>
+                    <p class="signature">Forever yours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="close-btn" id="closeBtn">Close</button>
+
+    <script>
+        // Create sparkles
+        for (let i = 0; i < 50; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.top = Math.random() * 100 + 'vh';
+            sparkle.style.animationDelay = Math.random() * 3 + 's';
+            document.body.appendChild(sparkle);
+        }
+
+        // Create floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            const hearts = ['💖', '💗', '💝', '✨'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '-50px';
+            heart.style.animationDuration = (8 + Math.random() * 4) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(function() {
+                heart.remove();
+            }, 12000);
+        }
+
+        setInterval(createFloatingHeart, 1200);
+
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createFloatingHeart, i * 500);
+        }
+
+        // Card flip functionality
+        const flipCard = document.getElementById('flipCard');
+        const closeBtn = document.getElementById('closeBtn');
+        let isFlipped = false;
+
+        flipCard.addEventListener('click', function() {
+            if (!isFlipped) {
+                flipCard.classList.add('flipped');
+                isFlipped = true;
+
+                setTimeout(function() {
+                    closeBtn.classList.add('visible');
+                }, 800);
+            }
+        });
+
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            flipCard.classList.remove('flipped');
+            isFlipped = false;
+            closeBtn.classList.remove('visible');
+        });
+    </script>
+</body>
+</html>
